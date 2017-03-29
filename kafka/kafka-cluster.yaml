@@ -1,0 +1,27 @@
+apiVersion: extensions/v1beta1
+kind: Deployment 
+metadata: 
+  name: kafka-master
+spec: 
+  replicas: 1
+  template: 
+    metadata: 
+      labels: 
+        name: kafka-master
+    spec: 
+      containers: 
+        - name: kafka-master
+          image: wurstmeister/kafka
+          env:
+          - name: KAFKA_ADVERTISED_HOST_NAME
+            value: "192.168.100.136"
+          - name: KAFKA_ADVERTISED_PORT
+            value: "30092"
+          - name: KAFKA_ZOOKEEPER_CONNECT
+            value: "zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181"
+          - name: KAFKA_AUTO_CREATE_TOPICS_ENABLE
+            value: "true"
+          - name: KAFKA_NUM_PARTITIONS
+            value: "5"
+          ports:
+          - containerPort: 9092

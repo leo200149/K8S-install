@@ -1,0 +1,29 @@
+apiVersion: v1 
+kind: Service 
+metadata: 
+  name: kafka-master
+  labels:
+    name: kafka-master
+spec: 
+  type: NodePort
+  ports: 
+    - name: client
+      port: 9092
+      nodePort: 30092
+      protocol: TCP
+  selector: 
+    name: kafka-master
+---
+apiVersion: v1 
+kind: Service 
+metadata: 
+  name: kafka-slave
+  labels:
+    name: kafka-slave
+spec: 
+  ports: 
+    - name: client
+      port: 9092
+      protocol: TCP
+  selector: 
+    name: kafka-slave

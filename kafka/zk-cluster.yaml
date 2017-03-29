@@ -1,0 +1,84 @@
+apiVersion: extensions/v1beta1
+kind: Deployment 
+metadata: 
+  name: zookeeper-1
+spec: 
+  replicas: 1
+  template: 
+    metadata: 
+      labels: 
+        name: zookeeper-1 
+    spec: 
+      containers: 
+        - name: zookeeper-1
+          image: digitalwonderland/zookeeper 
+          imagePullPolicy: IfNotPresent
+          env:
+          - name: ZOOKEEPER_ID
+            value: "1"
+          - name: ZOOKEEPER_SERVER_1
+            value: zookeeper-1
+          - name: ZOOKEEPER_SERVER_2
+            value: zookeeper-2
+          - name: ZOOKEEPER_SERVER_3
+            value: zookeeper-3
+          ports:
+          - containerPort: 2181
+
+---
+
+apiVersion: extensions/v1beta1 
+kind: Deployment
+metadata:
+  name: zookeeper-2
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: zookeeper-2
+    spec:
+      containers:
+        - name: zookeeper-2
+          image: digitalwonderland/zookeeper
+          imagePullPolicy: IfNotPresent
+          env:
+          - name: ZOOKEEPER_ID
+            value: "2"
+          - name: ZOOKEEPER_SERVER_1
+            value: zookeeper-1
+          - name: ZOOKEEPER_SERVER_2
+            value: zookeeper-2
+          - name: ZOOKEEPER_SERVER_3
+            value: zookeeper-3
+          ports:
+          - containerPort: 2181
+
+---
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: zookeeper-3
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: zookeeper-3
+    spec:
+      containers:
+        - name: zookeeper-3
+          image: digitalwonderland/zookeeper
+          imagePullPolicy: IfNotPresent
+          env:
+          - name: ZOOKEEPER_ID
+            value: "3"
+          - name: ZOOKEEPER_SERVER_1
+            value: zookeeper-1
+          - name: ZOOKEEPER_SERVER_2
+            value: zookeeper-2
+          - name: ZOOKEEPER_SERVER_3
+            value: zookeeper-3
+          ports:
+          - containerPort: 2181
