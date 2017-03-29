@@ -21,7 +21,7 @@ metadata:
     app: redis
     role: master
 spec:
-  type: nodePort
+  type: NodePort
   ports:
   - port: 6379
     targetPort: 6379
