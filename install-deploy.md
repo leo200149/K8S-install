@@ -1,5 +1,7 @@
 # K8S Docker app deploy
 
+所有操作都在k8s-master上完成，k8s-master會自動將pod分配佈署至k8s-node。
+
 ## 安裝私有docker image庫(如有現成的可不裝)
 
 ### dp.yaml
@@ -82,10 +84,10 @@ kubectl run {deployName} --image=127.0.0.1:{port}/{imageName}:{version}
 ## K8S service pod port 綁定
 
 ```sh
-kubectl expose deployment/{deployName} --type="NodePort" --port {appPort} --nodePort {outerPort}
+kubectl expose deployment/{deployName} --type="NodePort" --port {appPort} --nodePort {nodePort}
 ```
 
-使用master-ip:outerPort即可接至該container
+使用`{master-ip}:{nodePort}`即可接至該container
 
 ## K8S 自動佈署三個pod
 

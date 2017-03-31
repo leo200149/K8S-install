@@ -56,7 +56,7 @@ systemctl stop firewalld
 kubeadm init --pod-network-cidr 10.244.0.0/16
 ```
 
-在初始化完成後會帶出如`kubeadm join --token={token} {ip}`的指令，直接copy到node機器上即可加入子節點就好。
+在初始化完成後會帶出如`kubeadm join --token={token} {master-ip}`的指令，直接copy到node機器上即可加入子節點就好。
 
 ---
 
@@ -74,9 +74,22 @@ kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documen
 ---
 
 ## 安裝k8s Dashboard UI
+
 ```sh
 kubectl create -f https://rawgit.com/kubernetes/dashboard/master/src/deploy/kubernetes-dashboard.yaml
 ```
+
+查看port
+```sh
+kubectl get service kubernetes-dashboard --namespace=kube-system
+```
+
+```sh
+NAME                   CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
+kubernetes-dashboard   10.111.126.153   <nodes>       80:{nodePort}/TCP   2d
+````
+
+用`{master-ip}:{nodePort}`即可打開Dashboard UI.
 
 ---
 
