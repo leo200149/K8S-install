@@ -5,6 +5,7 @@
 ```sh
 hostnamectl set-hostname cluster-node-{id}
 service network restart
+sed -i "127.0.0.1  cluster-node-{id}" /etc/hosts
 ```
 
 `{id}`請自行替換
@@ -28,8 +29,27 @@ gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg
 EOF
 setenforce 0
 yum install -y docker kubelet kubeadm kubectl kubernetes-cni
+```
+
+## 補上kubeadm.conf
+
+```sh
+vi /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+```
+
+加入`KUBELET_EXTRA_ARGS`並存檔
+
+```sh
+Environment="KUBELET_EXTRA_ARGS=--cgroup-driver=systemd"
+```
+
+## 啟動服務
+
+```sh
 systemctl enable docker && systemctl start docker
 systemctl enable kubelet && systemctl start kubelet
+sysctl -w net.bridge.bridge-nf-call-iptables=1
+sysctl -w net.bridge.bridge-nf-call-ip6tables=1
 ```
 
 ---

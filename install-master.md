@@ -5,6 +5,7 @@
 ```sh
 hostnamectl set-hostname cluster-master
 service network restart
+sed -i "127.0.0.1  cluster-master" /etc/hosts
 ```
 
 ----
@@ -26,8 +27,27 @@ gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg
 EOF
 setenforce 0
 yum install -y docker kubelet kubeadm kubectl kubernetes-cni
+```
+
+## 補上kubeadm.conf
+
+```sh
+vi /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+```
+
+加入`KUBELET_EXTRA_ARGS`並存檔
+
+```sh
+Environment="KUBELET_EXTRA_ARGS=--cgroup-driver=systemd"
+```
+
+## 啟動服務
+
+```sh
 systemctl enable docker && systemctl start docker
 systemctl enable kubelet && systemctl start kubelet
+sysctl -w net.bridge.bridge-nf-call-iptables=1
+sysctl -w net.bridge.bridge-nf-call-ip6tables=1
 ```
 
 ---
@@ -37,6 +57,7 @@ systemctl enable kubelet && systemctl start kubelet
 ```sh
 vi /etc/sysconfig/selinux
 ```
+
 找到`SELINUX` 並設為 `SELINUX=disabled`
 
 ---
@@ -53,27 +74,53 @@ systemctl stop firewalld
 ## 使用kubeadm工具進行master節點初始化
 
 ```sh
-kubeadm init --pod-network-cidr 10.244.0.0/16
+kubeadm init --kubernetes-version=v1.6.1 --pod-network-cidr=10.244.0.0/16 \
+--apiserver-advertise-address={master-ip}
+```
+
+`{master-ip}`請自行替換
+
+
+
+## 將自動產生的key放到家目錄下，並為了kubectl訪問apiserver，在~/.bash_profile中追加上環境參數KUBECONFIG：
+
+```sh
+sudo cp /etc/kubernetes/admin.conf $HOME/
+sudo chown $(id -u):$(id -g) $HOME/admin.conf
+export KUBECONFIG=$HOME/admin.conf
+source ~/.bash_profile
 ```
 
 在初始化完成後會帶出如`kubeadm join --token={token} {master-ip}`的指令，直接copy到node機器上即可加入子節點就好。
 
 ---
 
-## 安裝k8s網路 可選想要的 以下列兩個擇一安裝
+## 安裝k8s網路(一定要裝)，可選想要的，以下為fannel的安裝方式，1.6版新增rbac驗證，要先建立一個角色。
 
-### weave
-```sh
-kubectl apply -f https://git.io/weave-kube
-```
 ### flannel
+
 ```sh
-kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml --validate=false\
+kubectl create -f kube-flannel-rbac.yml
+kubectl apply -f kube-flannel.yml
+```
+
+線上的
+
+```sh
+kubectl create -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel-rbac.yml
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 ```
 
 ---
 
 ## 安裝k8s Dashboard UI
+
+```sh
+kubectl create -f kube-dashboard-rbac.yal
+kubectl create -f kubernetes-dashboard.yaml
+```
+
+線上的
 
 ```sh
 kubectl create -f https://rawgit.com/kubernetes/dashboard/master/src/deploy/kubernetes-dashboard.yaml
