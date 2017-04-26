@@ -33,7 +33,7 @@ setsebool -P virt_sandbox_use_fusefs on
 
 ### 每台node準備空磁區供 `gluster-cluster` 使用
 
-`centos7 xfs`切磁區的方式可參考[調整XFS格式的LogicalVolume大小](http://jamyy.us.to/blog/2015/09/7673.html)
+`centos7 xfs`切磁區的方式可參考[調整XFS格式的LogicalVolume大小](http://jamyy.us.to/blog/2015/09/7673.html)
 
 切磁區請小心操作。
 
@@ -88,10 +88,10 @@ vi topology.json
           "node": {
             "hostnames": {
               "manage": [
-                "cluster-node1" #kubernetes節點1hostname
+                "cluster-node1" #kubernetes節點hostname
               ],
               "storage": [
-                "192.168.100.132" #kubernetes節點1ip
+                "192.168.100.132" #kubernetes節點ip
               ]
             },
             "zone": 1
@@ -106,10 +106,10 @@ vi topology.json
           "node": {
             "hostnames": {
               "manage": [
-                "cluster-node2" #kubernetes節點2hostname
+                "cluster-node2" #kubernetes節點hostname
               ],
               "storage": [
-                "192.168.100.133" #kubernetes節點2ip
+                "192.168.100.133" #kubernetes節點ip
               ]
             },
             "zone": 1
@@ -129,7 +129,7 @@ vi topology.json
 ### 開始deploy
 
 1. 建立`namespace gluster`
-2. 執行`gk-deploy`腳本 [腳本執行步驟拆分說明](gk-deploy-detail.md)
+2. 執行`gk-deploy`腳本 [腳本執行步驟拆分說明](gk-deploy-detail.md)
 3. `-g` 建立`daemonset-glusterfs` `-n` 設定`namespace` `-c` 環境是`k8s`
 
 ```sh
