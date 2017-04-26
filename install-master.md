@@ -87,7 +87,7 @@ kubeadm init --kubernetes-version=v1.6.1 --pod-network-cidr=10.244.0.0/16 \
 ```sh
 sudo cp /etc/kubernetes/admin.conf $HOME/
 sudo chown $(id -u):$(id -g) $HOME/admin.conf
-export KUBECONFIG=$HOME/admin.conf
+echo "export KUBECONFIG=$HOME/admin.conf" >> ~/.bash_profile
 source ~/.bash_profile
 ```
 
@@ -111,6 +111,12 @@ kubectl create -f https://raw.githubusercontent.com/coreos/flannel/master/Docume
 kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 ```
 
+## 使master參與負載(測試環境)
+
+```sh
+kubectl taint nodes --all  node-role.kubernetes.io/master-
+```
+
 ---
 
 ## 安裝k8s Dashboard UI
@@ -118,6 +124,7 @@ kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documen
 ```sh
 kubectl create -f kube-dashboard-rbac.yal
 kubectl create -f kubernetes-dashboard.yaml
+kubectl create -f kubernetes-dashboard-service.yaml
 ```
 
 線上的
@@ -129,15 +136,21 @@ kubectl create -f https://rawgit.com/kubernetes/dashboard/master/src/deploy/kube
 查看port
 ```sh
 kubectl get service kubernetes-dashboard --namespace=kube-system
+
+NAME                   CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
+kubernetes-dashboard   10.111.126.153   <nodes>       80:{nodePort}/TCP   1m
+kubernetes-dashboard-port   10.111.126.154   <nodes>       80:31795/TCP   1m
 ```
 
-```sh
-NAME                   CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
-kubernetes-dashboard   10.111.126.153   <nodes>       80:{nodePort}/TCP   2d
-````
-
-用`{master-ip}:{nodePort}`即可打開Dashboard UI.
+用`{master-ip}:31795` 或 `{master-ip}:{nodePort}`即可打開Dashboard UI.
 
 ---
 
+## 安裝Heapster 為Dashboard增加統計及監控(使用InfluxDB)
+
+```sh
+wget https://github.com/kubernetes/heapster/archive/v1.3.0.tar.gz
+tar -zxvf v1.3.0.tar.gz
+kubectl create -f heapster-1.3.0/deploy/kube-config/influxdb/
+```
 

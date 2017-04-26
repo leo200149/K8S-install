@@ -43,6 +43,16 @@ vi /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
 Environment="KUBELET_EXTRA_ARGS=--cgroup-driver=systemd"
 ```
 
+## 關閉SELinux(練習用不管OS層權限才關，正式需自行找設定方式)
+
+```sh
+vi /etc/sysconfig/selinux
+```
+
+找到`SELINUX` 並設為 `SELINUX=disabled`
+
+---
+
 ## 啟動服務
 
 ```sh
