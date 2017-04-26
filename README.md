@@ -15,5 +15,6 @@
 3. 安裝kubernetes node-[install-node.md](install-node.md)
 4. 佈署app container至kuberneetes-[install-deploy.md](install-deploy.md)
 5. 範例可用[kafka](kafka),[redis](redis)(clone後執行shell檔)
+6. 安裝gluster-kubernetes 做為`volumes` 供app掛載使用-[volumes folder](volumes)
 
 ---

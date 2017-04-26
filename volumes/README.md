@@ -1,7 +1,6 @@
-# Volumes
+# Kubernetes Volumes - [官網Document](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
 
-
-## Glusterfs
+## Kubernetes Glusterfs
 
 A `glusterfs` volume allows a [Glusterfs](http://www.l-penguin.idv.tw/book/Gluster-Storage_GitBook/gluster_intra/gluster_arch.html) (an open source networked filesystem) volume to be mounted into your pod. Unlike `emptyDir`, which is erased when a Pod is removed, the contents of a `glusterfs` volume are preserved and the volume is merely unmounted. This means that a glusterfs volume can be pre-populated with data, and that data can be “handed off” between pods. GlusterFS can be mounted by multiple writers simultaneously.
 
@@ -9,37 +8,19 @@ A `glusterfs` volume allows a [Glusterfs](http://www.l-penguin.idv.tw/book/Glust
 
 See the [GlusterFS example](https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/glusterfs) for more details.
 
----
+## 使用方式
 
-## Cephfs
+1. 準備網路檔案系統集群([Gluster](http://www.l-penguin.idv.tw/book/Gluster-Storage_GitBook/gluster_intra/gluster_arch.html)/Ceph/Other)
+2. 本範例直接用[gluster-kubernetes](https://github.com/gluster/gluster-kubernetes)架一組`gluster cluster`在各個節點上。
+3. 建立`Storage Classes`/`Persistent Volumes`。
+4. 個別容器設定`pod volumes config`(如`redis/kafka`之類需要保存`data`狀態的容器)。
 
-A `cephfs` volume allows an existing [CephFS](http://docs.ceph.com/docs/master/cephfs/) volume to be mounted into your pod. Unlike `emptyDir`, which is erased when a Pod is removed, the contents of a `cephfs` volume are preserved and the volume is merely unmounted. This means that a CephFS volume can be pre-populated with data, and that data can be “handed off” between pods. CephFS can be mounted by multiple writers simultaneously.
+## 範例
 
-**Important: You must have your own Ceph server running with the share exported before you can use it**
-
-See the [CephFS example](https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/cephfs/) for more details.
-
----
-
-## Nfs
-
-An `nfs` volume allows an existing [NFS](http://linux.vbird.org/linux_server/0330nfs.php) (Network File System) share to be mounted into your pod. Unlike `emptyDir`, which is erased when a Pod is removed, the contents of an `nfs` volume are preserved and the volume is merely unmounted. This means that an NFS volume can be pre-populated with data, and that data can be “handed off” between pods. NFS can be mounted by multiple writers simultaneously.
-
-**Important: You must have your own NFS server running with the share exported before you can use it**
-
-See the [NFS example](https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/nfs) for more details.
-
----
-
-## Rbd
-
-An `rbd` volume allows a [Rados Block Device](http://ceph.com/docs/master/rbd/rbd/) volume to be mounted into your pod. Unlike `emptyDir`, which is erased when a Pod is removed, the contents of a `rbd` volume are preserved and the volume is merely unmounted. This means that a RBD volume can be pre-populated with data, and that data can be “handed off” between pods.
-
-**Important: You must have your own Ceph installation running before you can use RBD**
-
-A feature of RBD is that it can be mounted as read-only by multiple consumers simultaneously. This means that you can pre-populate a volume with your dataset and then serve it in parallel from as many pods as you need. Unfortunately, RBD volumes can only be mounted by a single consumer in read-write mode - no simultaneous writers allowed.
-
-See the [RBD example](https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/rbd) for more details.
+1. 架設gluster-cluster-[install-gluster-kubenetes](install-gluster-kubenetes.md)
+2. 建立`Storage Classes`/`Persistent Volumes`並設定容器config[deploy-with-volume](deploy-volume.md)
 
 
----
+## 其它
+
+`gluster-kubenetes-master-deploy`保存當前可執行版本 git version `28119b3ed834c1d7bb08810e213dd8e82b02bec2`
