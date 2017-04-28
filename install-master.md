@@ -122,7 +122,7 @@ kubectl taint nodes --all  node-role.kubernetes.io/master-
 ## 安裝k8s Dashboard UI
 
 ```sh
-kubectl create -f kube-dashboard-rbac.yal
+kubectl create -f kube-dashboard-rbac.yml
 kubectl create -f kubernetes-dashboard.yaml
 kubectl create -f kubernetes-dashboard-service.yaml
 ```
